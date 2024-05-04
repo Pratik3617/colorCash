@@ -82,7 +82,7 @@ export const TimerProvider = ({ children }) => {
 
         // Check if current time is a multiple of 3 minutes for updating period1
         if (currentMinutes % 3 === 0 && currentSeconds === 0) {
-            setPeriod1(generateTimestamp());
+          setPeriod1(generateTimestamp());
         }
 
         // Check if current time is a multiple of 2 minutes for updating period2
@@ -111,48 +111,58 @@ export const TimerProvider = ({ children }) => {
 // user open app first time
 
   //period1
-  useEffect(() => {
+useEffect(() => {
+  const intervalId = setInterval(() => {
     const currentTime = new Date();
     const currentMinutes = currentTime.getMinutes();
 
-    if(Number(currentMinutes) % 3 === 0){
+    if (Number(currentMinutes) % 3 === 0) {
       const timestamp = generateTimestamp();
       setPeriod1(timestamp);
-    }else if(Number(currentMinutes) % 3 === 1){
+    } else if (Number(currentMinutes) % 3 === 1) {
       const timestamp = generateTimestamp();
       const minutes = timestamp.slice(-2);
-      
-      const newminutes = Number(minutes)-1;
-      const newtimestamp = String(timestamp).slice(0,-2) + String(newminutes).padStart(2, '0'); 
+      const newminutes = Number(minutes) - 1;
+      const newtimestamp =
+        String(timestamp).slice(0, -2) + String(newminutes).padStart(2, '0');
       setPeriod1(newtimestamp);
-    }else{
+    } else {
       const timestamp = generateTimestamp();
       const minutes = timestamp.slice(-2);
-      const newminutes = Number(minutes)-2;
-      const newtimestamp = String(timestamp).slice(0,-2) + String(newminutes).padStart(2, '0');
+      const newminutes = Number(minutes) - 2;
+      const newtimestamp =
+        String(timestamp).slice(0, -2) + String(newminutes).padStart(2, '0');
       setPeriod1(newtimestamp);
     }
-    
+  }, 1000); // Run every second
+
+  // Clean up the interval on unmount or when the dependency array changes
+  return () => clearInterval(intervalId);
 }, []);
 
 
 //period2
 useEffect(() => {
-  const currentTime = new Date();
-  const currentMinutes = currentTime.getMinutes();
+  const intervalId = setInterval(() => {
+    const currentTime = new Date();
+    const currentMinutes = currentTime.getMinutes();
 
-  if(Number(currentMinutes) % 2 === 0){
-    const timestamp = generateTimestamp();
-    setPeriod2(timestamp);
-  }else{
-    const timestamp = generateTimestamp();
-    const minutes = timestamp.slice(-2);
-    
-    const newminutes = Number(minutes)-1;
-    const newtimestamp = String(timestamp).slice(0,-2) + String(newminutes).padStart(2, '0'); 
-    setPeriod2(newtimestamp);
-  }
+    if (Number(currentMinutes) % 2 === 0) {
+      const timestamp = generateTimestamp();
+      setPeriod2(timestamp);
+    } else {
+      const timestamp = generateTimestamp();
+      const minutes = timestamp.slice(-2);
+      const newminutes = Number(minutes) - 1;
+      const newtimestamp =
+        String(timestamp).slice(0, -2) + String(newminutes).padStart(2, '0');
+      setPeriod2(newtimestamp);
+    }
+  }, 1000); // Run every second
+
+  return () => clearInterval(intervalId);
 }, []);
+
 
   return (
     <TimerContext.Provider value={{ timer1, timer2, emerdResult, bconeResult, period1, period2, setPeriod1, setPeriod2, generateTimestamp }}>
